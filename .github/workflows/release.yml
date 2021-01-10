@@ -13,7 +13,7 @@ name: Release
 
 defaults:
   run:
-    working-directory: 'guidowojke.jamulus'
+    working-directory: 'guidowojke.ninjam'
 
 jobs:
 
@@ -34,7 +34,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
-            - completed variables for jamulus server installation
+            - first version to install a nimjam server
           draft: false
           prerelease: true
 
@@ -45,7 +45,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'guidowojke.jamulus'
+          path: 'guidowojke.ninjam'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
