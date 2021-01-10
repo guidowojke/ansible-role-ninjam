@@ -83,6 +83,7 @@
     chdir: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
     removes: "{{ ninjam_folder }}/ninjam-git/ninjam/server/ninjamsrv"
   when: ninjam_build
+  changed_when: false
   become: true
 # make
 - name: "[BUILD] make"
@@ -91,6 +92,7 @@
     chdir: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
     creates: "{{ ninjam_folder }}/ninjam-git/ninjam/server/ninjamsrv"
   when: ninjam_build
+  changed_when: false
   become: true
 
 - name: "copy executable to versioned binary folder"
@@ -103,6 +105,8 @@
     mode: 0755
   notify:
     - restart ninjam server
+  when: ninjam_build
+  changed_when: false
   become: true
 
 # added service script
