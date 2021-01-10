@@ -1,0 +1,7 @@
+---
+- name: restart ninjam server
+  systemd:
+    daemon_reload: true
+    name: "{{ ninjam_service }}"
+    state: restarted
+  become: true

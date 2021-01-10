@@ -1,0 +1,26 @@
+[Unit]
+Description=Ninjam-Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User={{ ninjam_username }}
+Group={{ ninjam_username }}
+NoNewPrivileges=true
+ProtectSystem=true
+ProtectHome=true
+Nice=-20
+IOSchedulingClass=realtime
+IOSchedulingPriority=0
+
+ExecStart=/bin/bash -c '/opt/{{ ninjam_username }}/ninjamsrv /opt/{{ ninjam_username }}/ninjamserver.cfg'
+
+StandardOutput=journal
+StandardError=inherit
+SyslogIdentifier=ninjamsrv
+
+[Install]
+WantedBy=multi-user.target

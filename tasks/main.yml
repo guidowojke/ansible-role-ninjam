@@ -1,0 +1,119 @@
+---
+# Install packages needed by ninjam
+- name: Install the list of packages for ninjam
+  apt:
+    autoclean: true
+    autoremove: true
+    state: present
+    pkg:
+      - git  # to checkout the project from github
+      - build-essential
+  become: true
+
+# Add ninjam group
+- name: "Ensure group {{ ninjam_username }} exists"
+  group:
+    name: "{{ ninjam_username }}"
+    state: present
+  become: true
+
+# Add ninjam user
+- name: "Add the user {{ ninjam_username }}"
+  user:
+    name: "{{ ninjam_username }}"
+    comment: NinjamServer
+    group: "{{ ninjam_username }}"
+    system: true
+    create_home: false
+    shell: /sbin/nologin
+  become: true
+
+# create ninjam log folder
+- name: create ninjam log directory
+  file:
+    path: "{{ ninjam_log_folder }}"
+    state: directory
+    owner: "{{ ninjam_username }}"
+    group: "{{ ninjam_username }}"
+    mode: '0755'
+  become: true
+
+# create ninjam opt folder with correct owner
+- name: create ninjam opt directory
+  file:
+    path: "{{ ninjam_folder }}"
+    state: directory
+    owner: "{{ ninjam_username }}"
+    group: "{{ ninjam_username }}"
+    mode: '0755'
+  become: true
+
+# create ninjam server folder
+- name: Create ninjam server directory
+  file:
+    path: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin"
+    state: directory
+    owner: "{{ ninjam_username }}"
+    group: "{{ ninjam_username }}"
+    mode: '0755'
+  become: true
+
+# sources from ninjam
+- name: checkout ninjam version from github
+  git:
+    repo: 'https://github.com/justinfrankel/ninjam/'
+    dest: "{{ ninjam_folder }}/ninjam-git"
+    version: "{{ ninjam_release_version }}"
+  become: true
+
+# stop server
+#- name: stop ninjam service before building ninjam
+#  systemd:
+#    name: "{{ ninjam_service }}"
+#    state: stopped
+#  when: ninjam_build
+#  ignore_errors: true  # if service is not present
+#  become: true
+
+# all build commands
+# make clean
+- name: "[BUILD] make clean"
+  command: make clean
+  args:
+    chdir: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
+    removes: "{{ ninjam_folder }}/ninjam-git/ninjam/server/ninjamsrv"
+  when: ninjam_build
+  become: true
+# make
+- name: "[BUILD] make"
+  command: make
+  args:
+    chdir: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
+    creates: "{{ ninjam_folder }}/ninjam-git/ninjam/server/ninjamsrv"
+  when: ninjam_build
+  become: true
+
+- name: "copy executable to versioned binary folder"
+  copy:
+    src: "/opt/{{ ninjam_username }}/ninjam-git/ninjam/server/"
+    dest: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin"
+    remote_src: true
+    owner: "{{ ninjam_username }}"
+    group: "{{ ninjam_username }}"
+    mode: 0755
+  notify:
+    - restart ninjam server
+  become: true
+
+# added service script
+- name: create ninjam-server template
+  template:
+    src: ninjam-server.service.j2
+    dest: "/etc/systemd/system/{{ ninjam_service }}.service"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify:
+    - restart ninjam server
+  become: true
+  # register: ninjam_server_script

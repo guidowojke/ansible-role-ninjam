@@ -1,0 +1,14 @@
+---
+ninjam_version: "c7dec4de5544e01a7d7c7be2be9fabf0c3043298"
+ninjam_port: "2049"
+ninjam_build: true
+ninjam_timezone: "America/Los_Angeles"
+ninjam_release_version: "r{{ ninjam_version | regex_replace('\\.', '_') }}"
+ninjam_username: "ninjamserver"
+ninjam_folder: "/opt/{{ ninjam_username }}"
+ninjam_log_folder: "/var/log/{{ ninjam_username }}/"
+ninjam_welcomemessage: "Welcome to the Ninjam Server ({{ ninjam_release_version }})"
+ninjam_serverinfo: "yourdomain.com({{ ninjam_release_version }});YourCity,YourCountry;CountryCode"
+ninjam_centralserver: "localhost"
+ninjam_numchannels: "10"
+ninjam_service: "ninjam-server"
