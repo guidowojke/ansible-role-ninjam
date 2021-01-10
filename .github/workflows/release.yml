@@ -34,9 +34,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
-            - first version to install a nimjam server
+            - first final version to install a nimjam server
           draft: false
-          prerelease: true
+          prerelease: false
 
   galaxy-release:
     name: Release
