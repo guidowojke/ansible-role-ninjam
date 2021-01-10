@@ -16,7 +16,7 @@ Nice=-20
 IOSchedulingClass=realtime
 IOSchedulingPriority=0
 
-ExecStart=/bin/bash -c '/opt/{{ ninjam_username }}/ninjamsrv /opt/{{ ninjam_username }}/ninjamserver.cfg'
+ExecStart=/bin/bash -c '{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin/ninjamsrv {{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin/ninjamserver.cfg'
 
 StandardOutput=journal
 StandardError=inherit

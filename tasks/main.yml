@@ -97,8 +97,8 @@
 
 - name: "copy executable to versioned binary folder"
   copy:
-    src: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
-    dest: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin"
+    src: "{{ ninjam_folder }}/ninjam-git/ninjam/server/ninjamsrv"
+    dest: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin/ninjamsrv"
     remote_src: true
     owner: "{{ ninjam_username }}"
     group: "{{ ninjam_username }}"
