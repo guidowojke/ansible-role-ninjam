@@ -97,7 +97,7 @@
 
 - name: "copy executable to versioned binary folder"
   copy:
-    src: "/opt/{{ ninjam_username }}/ninjam-git/ninjam/server/"
+    src: "{{ ninjam_folder }}/ninjam-git/ninjam/server/"
     dest: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin"
     remote_src: true
     owner: "{{ ninjam_username }}"
@@ -107,6 +107,18 @@
     - restart ninjam server
   when: ninjam_build
   changed_when: false
+  become: true
+
+# added ninjam server config file
+- name: create ninjam-server config file
+  template:
+    src: ninjamserver.cfg.j2
+    dest: "{{ ninjam_folder }}/ninjam-{{ ninjam_release_version }}/bin/ninjamserver.cfg"
+    owner: "{{ ninjam_username }}"
+    group: "{{ ninjam_username }}"
+    mode: 0644
+  notify:
+    - restart ninjam server
   become: true
 
 # added service script
@@ -120,4 +132,3 @@
   notify:
     - restart ninjam server
   become: true
-  # register: ninjam_server_script
